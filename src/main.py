@@ -4,13 +4,6 @@ import json
 from dotenv import load_dotenv
 import os
 
-def createjson(list, name):
-    _list = json.dumps(list, indent=4)
-    path = "./" + name + ".txt"
-    f = open(path, "w")
-    f.write(_list)
-    f.close()
-
 # AUTH HANDLING
 scopes = ["playlist-read-private", "playlist-modify-private"]
 
@@ -46,4 +39,19 @@ for playlist in playlists:
 
 all_tracks = list(dict.fromkeys(all_tracks))
 
-print(all_tracks)
+
+# splitting list because adding tracks can only be done in batches of 100 per request
+split_list = []
+
+i = 0
+list = []
+for track in all_tracks:
+    list.append(track)
+    i += 1
+    if(i == 100):
+        i = 0
+        split_list.append(list)
+        list = []
+split_list.append(list)
+
+# Creating playlist
